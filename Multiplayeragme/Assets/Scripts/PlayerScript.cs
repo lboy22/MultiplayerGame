@@ -18,23 +18,19 @@ public class PlayerScript : MonoBehaviour
     public GameObject bulletPrefab;
     public Transform muzzleTransform;
 
-    public AnimationCurve recoilCurve;
-    public float recoilDuration = 0.25f;
-    public float recoilMaxRotation = 45f;
-    public Transform rightLowerArm;
-    public Transform rightHand;
-
     private float inputMovement;
     private Animator animator;
-    private Rigidbody rbody;
+    private Rigidbody playerBody;
     private bool isGrounded;
     private Camera mainCamera;
     private float recoilTimer;
 
+    // These variables are used to control and manipulate the sound effects heard in game.
     [SerializeField] float footstepDelay = 0.35f, lastFootstepDelay = 0f;
     [SerializeField] AudioClip footstepSound, gunshot, ready, jump, tired, deathSound;
     [SerializeField] AudioSource audioSource, gunShotSource, jumpSource, tiredSource, readySource, deathSource;
 
+    // This dictates the player's acing direction, and the value returned is used to accomodate the use of animations.
     private int FacingSign
     {
         get
@@ -48,14 +44,14 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        rbody = GetComponent<Rigidbody>();
+        playerBody = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
     }
 
-
+    // Basic player movemment such as jumping, moving and shooting are processed.
     void Update()
     {
-        if(rbody.velocity.x > 0)
+        if(playerBody.velocity.x > 0)
         {
             readySource.PlayOneShot(ready);
         }
@@ -71,8 +67,8 @@ public class PlayerScript : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            rbody.velocity = new Vector3(rbody.velocity.x, 0, 0);
-            rbody.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -1 * Physics.gravity.y), ForceMode.VelocityChange);
+            playerBody.velocity = new Vector3(playerBody.velocity.x, 0, 0);
+            playerBody.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -1 * Physics.gravity.y), ForceMode.VelocityChange);
             jumpSource.PlayOneShot(jump);
         }
         else if(Input.GetButtonDown("Jump") && !isGrounded)
@@ -90,6 +86,8 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    // Player' shooting action is developed.
+    // Still in development.
     private void Fire()
     {
         recoilTimer = Time.time;
@@ -101,57 +99,24 @@ public class PlayerScript : MonoBehaviour
         bullet.Fire(go.transform.position, muzzleTransform.eulerAngles, gameObject.layer);
     }
 
-    private void LateUpdate()
-    {
-        // Recoil Animation
-        if (recoilTimer < 0)
-        {
-            return;
-        }
-
-        float curveTime = (Time.time - recoilTimer) / recoilDuration;
-        if (curveTime > 1f)
-        {
-            recoilTimer = -1;
-        }
-        else
-        {
-            rightLowerArm.Rotate(Vector3.forward, recoilCurve.Evaluate(curveTime) * recoilMaxRotation, Space.Self);
-        }
-
-
-    }
-
     private void FixedUpdate()
     {
-        // Movement
-        rbody.velocity = new Vector3(inputMovement * walkSpeed, rbody.velocity.y, 0);
-        animator.SetFloat("speed", (FacingSign * rbody.velocity.x) / walkSpeed);
+        // Basic playre movement with animation in motion.
+        playerBody.velocity = new Vector3(inputMovement * walkSpeed, playerBody.velocity.y, 0);
+        animator.SetFloat("speed", (FacingSign * playerBody.velocity.x) / walkSpeed);
 
-        // Facing Rotation
-        rbody.MoveRotation(Quaternion.Euler(new Vector3(0, 90 * Mathf.Sign(targetTransform.position.x - transform.position.x), 0)));
+        // This allows for plyer rotation and still carry the animation and movement in sync.
+        playerBody.MoveRotation(Quaternion.Euler(new Vector3(0, 90 * Mathf.Sign(targetTransform.position.x - transform.position.x), 0)));
 
-        // Ground Check
+        // Through this we stop the player from jumping while already in the air.
         isGrounded = Physics.CheckSphere(groundCheckTransform.position, groundCheckRadius, groundMask, QueryTriggerInteraction.Ignore);
         animator.SetBool("isGrounded", isGrounded);
 
-        // Play footstep sound if moving on x-axis and enough time has passed since the last footstep sound
         if (Mathf.Abs(inputMovement) > 0.1f && Time.time - lastFootstepDelay > footstepDelay)
         {
             audioSource.PlayOneShot(footstepSound);
             lastFootstepDelay = Time.time;
         }
-    }
-
-    private void OnAnimatorIK()
-    {
-        // Weapon Aim at Target IK
-        animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-        animator.SetIKPosition(AvatarIKGoal.RightHand, targetTransform.position);
-
-        // Look at target IK
-        animator.SetLookAtWeight(1);
-        animator.SetLookAtPosition(targetTransform.position);
     }
 
     void DeathTest()

@@ -11,7 +11,9 @@ public class Bullet : MonoBehaviour
     private int firedByLayer;
     private float lifeTimer;
 
-
+    // In this class the bullet's behaviors iis developed to act as a projectile.
+    // This logic has been taken from an external source and applied to my overall application.
+    // Bullet behavior is not correct at the moment (WIP).
     void Update()
     {
         RaycastHit hit;
@@ -39,10 +41,7 @@ public class Bullet : MonoBehaviour
 
     private void Hit(Vector3 position, Vector3 direction, Vector3 reflected, Collider collider)
     {
-        // Do something here with the object that was hit (collider), e.g. collider.gameObject 
-
         Destroy(gameObject);
-
     }
 
     public void Fire(Vector3 position, Vector3 euler, int layer)

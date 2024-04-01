@@ -8,11 +8,10 @@ using UnityEngine.SceneManagement;
 
 public class SimplePlayer : NetworkBehaviour
 {
-    private Animator animator;
-
     public GameObject spawnPointOne;
     public GameObject spawnPointTwo;
 
+    // From line 14 to line 36, the code is to verify that the connectivity is working as intended, and data is being passed/received correctly as intended.
     private NetworkVariable<MyCustomData> randomValue = new NetworkVariable<MyCustomData>(new MyCustomData { _int = 56, _bool = true}, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     public struct MyCustomData : INetworkSerializable
@@ -36,9 +35,10 @@ public class SimplePlayer : NetworkBehaviour
         };
     }
 
+    // A set spawning position is specified to both the host and clients.
     private void Start()
     {
-        if(!IsOwner)
+        if(IsOwner)
         {
             transform.position = spawnPointOne.transform.position;
         }
@@ -46,9 +46,10 @@ public class SimplePlayer : NetworkBehaviour
         {
             transform.position = spawnPointTwo.transform.position;
         }
-        animator = GetComponent<Animator>();
 
     }
+    
+    // Player movement (using keys A and D) is defined in the update method.
     private void Update()
     {
         Debug.Log(OwnerClientId + "; Randome value" + randomValue);
@@ -73,6 +74,7 @@ public class SimplePlayer : NetworkBehaviour
         transform.position += moveDirection * moveSpeed * Time.deltaTime;
     }
 
+    // Winning condition is set as the first player to touch the ground finishes the game/level.
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.name == "Ground")

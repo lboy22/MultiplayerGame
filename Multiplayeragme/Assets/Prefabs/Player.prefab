@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 1776627991800282503}
   - component: {fileID: 1776627991800282504}
   - component: {fileID: 1776627991800282505}
+  - component: {fileID: -4462629899149111805}
+  - component: {fileID: -1526922182872508847}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -111,7 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2889085093
+  GlobalObjectIdHash: 3753831162
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -120,3 +122,48 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-4462629899149111805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776627991800282506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77d2d59f80cb57e4fb6cdf4ff12fc908, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPointOne: {fileID: 5480011740194279687, guid: 2efac8fe1fd4fba4fa0a8377ed72dca4, type: 3}
+  spawnPointTwo: {fileID: 6941282421511251541, guid: 397d5a884a888794db2e8d4fa567e902, type: 3}
+--- !u!114 &-1526922182872508847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776627991800282506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8607b05f390306540bf22b21f38f7851, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 1
+  SlerpPosition: 0

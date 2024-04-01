@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlayerScript : MonoBehaviour
+public class PlayerScript : NetworkBehaviour
 {
     public float walkSpeed = 2.5f;
     public float jumpHeight = 5f;
@@ -51,6 +52,7 @@ public class PlayerScript : MonoBehaviour
     // Basic player movemment such as jumping, moving and shooting are processed.
     void Update()
     {
+        if (!IsOwner) { return; }
         if(playerBody.velocity.x > 0)
         {
             readySource.PlayOneShot(ready);
@@ -79,10 +81,6 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             Fire();
-        }
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            DeathTest();
         }
     }
 
@@ -119,9 +117,19 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    void DeathTest()
+    private void OnCollisionEnter(Collision collision)
     {
-        deathSource.PlayOneShot(deathSound);
-        Destroy(this);
+        if(collision.gameObject.tag == "bullet")
+        {
+            deathSource.PlayOneShot(deathSound);
+            StartCoroutine(Death());
+        }
+    }
+
+    IEnumerator Death()
+    {
+
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
     }
 }
